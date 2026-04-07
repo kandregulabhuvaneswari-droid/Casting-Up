@@ -1,0 +1,373 @@
+ /* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* BODY */
+body {
+  font-family: "Fantasy", serif;
+  background: linear-gradient(to bottom, #000000, #111111);
+  color: white;
+  text-align: center;
+  overflow-x: hidden;
+}
+
+/* HEADER (Netflix style) */
+header {
+  
+
+  text-align:left;
+  /* <h6></h6>text-align: right; */
+  position:static;
+  top: 0;
+  background: rgba(0,0,0,0.9);
+  padding: 15px;
+  font-size: 20px;
+  color: aqua;
+  letter-spacing: 2px;
+  box-shadow: 0 0 15px blue;
+  z-index: 1000;
+}
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background: black;
+  box-shadow: 0 0 15px indigo;
+}
+
+/* Logo */
+.logo {
+  color: aqua;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* Links */
+.nav-links {
+  list-style: none;
+  display: flex;
+}
+
+.nav-links li {
+  margin-left: 20px;
+}
+
+/* Link style */
+.nav-links a {
+  text-decoration: none;
+  color: white;
+  transition: 0.3s;
+}
+
+/* Hover effect */
+.nav-links a:hover {
+  color: aqua;
+  text-shadow: 0 0 10px aqua;
+}
+
+/* MAIN TITLE */
+h1 {
+  font-size: 40px;
+  margin-top: 20px;
+  color: white;
+  text-shadow:
+    0 0 10px gold,
+    0 0 20px gold,
+    0 0 40px gold;
+  animation: flicker 2s infinite alternate;
+}
+
+/* FLICKER ANIMATION */
+@keyframes flicker {
+  0% {opacity: 1;}
+  50% {opacity: 0.8;}
+  100% {opacity: 1;}
+}
+
+/* IMAGE (poster style) */
+img {
+  width: 500px;
+  margin: 20px 0;
+  border-radius: 10px;
+  box-shadow: 0 0 30px indigo;
+  transition: 0.5s;
+}
+
+img:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 50px blue;
+}
+
+/* TEXT */
+p {
+  
+  width: 80%;
+  margin: auto;
+  line-height: 1.6;
+  color: #ccc;
+}
+
+/* TABLE */
+table {
+  margin: 30px auto;
+  border-collapse: collapse;
+  width: 60%;
+  background: rgba(255,255,255,0.05);
+  box-shadow: 0 0 20px aqua;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th {
+  background: indigo ;
+  color: white;
+}
+
+th, td {
+  padding: 12px;
+  border: 1px solid #444;
+}
+
+/* Remove glow from button cells */
+td button {
+  box-shadow: none !important;
+}
+
+/* FORM (card style) */
+form {
+  align-items: center;
+  text-align: left;
+  width: 500px;
+  margin: 30px auto;
+  padding: 25px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 15px;
+  box-shadow: 0 0 30px aqua;
+  animation: slideUp 1s ease;
+}
+
+/* INPUTS */
+input {
+  width: 90%;
+  padding: 10px;
+  margin: 8px;
+  border-radius: 6px;
+  border: none;
+  background: #222;
+  color: white;
+}
+
+/* BUTTON */
+input[type="submit"] {
+  background: indigo;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+input[type="submit"]:hover {
+  background: white;
+  color: black;
+  box-shadow: 0 0 20px aqua;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  margin-top: 40px;
+  padding: 20px;
+  background: rgba(0,0,0,0.9);
+  box-shadow: 0 0 20px blue;
+}
+
+/* ANIMATIONS */
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* SECTION SPACING */
+section, main {
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* LOGIN PAGE STYLES */
+.login-container {
+  max-width: 400px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  color: #333;
+  animation: slideUp 0.5s ease-out;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-icon {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.login-form h2 {
+  text-align: center;
+  color: #667eea;
+  margin-bottom: 1.5rem;
+  font-family: Arial, sans-serif;
+  word-wrap: break-word;
+}
+
+.login-form input[type="password"] {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.5rem 0 1rem 0;
+  border: 2px solid #e0e0e0;
+  border-radius: 5px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  background: white;
+  color: #333;
+}
+
+.login-form input[type="password"]:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 8px rgba(102, 126, 234, 0.4);
+}
+
+.login-form label {
+  font-weight: 600;
+  color: #333;
+  margin: 1rem 0 0.5rem 0;
+  text-align: left;
+  font-family: Arial, sans-serif;
+  display: block;
+  box-sizing: border-box;
+}
+
+.login-button {
+  width: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-top: 1.5rem;
+  box-sizing: border-box;
+}
+
+.login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.error-message {
+  color: #d32f2f;
+  background-color: #ffebee;
+  padding: 0.75rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  border-left: 4px solid #d32f2f;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.back-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.back-link a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.3s;
+  font-family: Arial, sans-serif;
+  display: inline-block;
+}
+
+.back-link a:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+/* ADMIN ACTION BUTTONS - COMPLETELY ISOLATED */
+#btn-accept,
+#btn-reject {
+  all: unset !important;
+  padding: 0.5rem 1rem !important;
+  border: none !important;
+  border-radius: 0 !important;
+  cursor: pointer !important;
+  font-weight: bold !important;
+  transition: background 0.3s ease !important;
+  margin: 0 !important;
+  font-size: 1rem !important;
+  font-family: Arial, sans-serif !important;
+  display: inline-block !important;
+  text-align: center !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  outline: none !important;
+  background-clip: padding-box !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  line-height: 1 !important;
+}
+
+#btn-accept {
+  background: #388e3c !important;
+  color: white !important;
+}
+
+#btn-accept:hover {
+  background: #2e7d32 !important;
+}
+
+#btn-accept:active {
+  background: #1b5e20 !important;
+}
+
+#btn-reject {
+  background: #d32f2f !important;
+  color: white !important;
+}
+
+#btn-reject:hover {
+  background: #c62828 !important;
+}
+
+#btn-reject:active {
+  background: #b71c1c !important;
+}

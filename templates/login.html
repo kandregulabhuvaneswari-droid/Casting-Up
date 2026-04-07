@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Login - CASTINGUP</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+  <nav class="navbar">
+
+    <div class="logo">
+      🎬 CASTINGUP
+    </div>
+
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/audition">Auditions</a></li>
+      <li><a href="/apply">Apply</a></li>
+      <li><a href="/login">Admin</a></li>
+    </ul>
+
+  </nav>
+</header>
+
+<main>
+
+<div class="login-container">
+
+  <div class="login-icon">🔐</div>
+
+  <form class="login-form" method="POST" action="/login">
+
+    <h2>Admin Panel</h2>
+
+    {% if error %}
+    <div class="error-message">
+      ⚠️ {{ error }}
+    </div>
+    {% endif %}
+
+    <label for="key">Authentication Key:</label>
+    <input type="password" id="key" name="key" placeholder="Enter admin key" required autofocus>
+
+    <button type="submit" class="login-button">🔓 Login</button>
+
+  </form>
+
+  <div class="back-link">
+    <a href="/">← Back to Home</a>
+  </div>
+
+</div>
+
+</main>
+
+<footer>
+  <p>&copy; 2026 CASTINGUP. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

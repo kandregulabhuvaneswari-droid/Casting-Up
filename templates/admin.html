@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Panel - CASTINGUP</title>
+<link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+  <nav class="navbar">
+
+    <div class="logo">
+      🎬 CASTINGUP
+    </div>
+
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/audition">Auditions</a></li>
+      <li><a href="/apply">Apply</a></li>
+      <li><a href="/login">Admin</a></li>
+      <li><a href="/logout" style="color: #ff6b6b; font-weight: bold;">Logout</a></li>
+    </ul>
+
+  </nav>
+</header>
+
+<main>
+
+<h1>👨‍💼 Admin Panel - Applicants</h1>
+
+<section>
+
+<h2>Total Applicants: <span style="color: #667eea;">{{ applicants|length }}</span></h2>
+
+{% if applicants %}
+
+<table border="1" style="width: 100%; overflow-x: auto;">
+<thead>
+<tr>
+<th>S.No</th>
+<th>Full Name</th>
+<th>Age</th>
+<th>Email</th>
+<th>Phone</th>
+<th>Experience</th>
+<th>Applied On</th>
+<th>Status</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody>
+{% for applicant in applicants %}
+<tr>
+<td>{{ loop.index }}</td>
+<td>{{ applicant.full_name }}</td>
+<td>{{ applicant.age }}</td>
+<td>{{ applicant.email }}</td>
+<td>{{ applicant.phone }}</td>
+<td>
+  {% if applicant.experience %}
+    {{ applicant.experience[:50] }}{% if applicant.experience|length > 50 %}...{% endif %}
+  {% else %}
+    <em>None</em>
+  {% endif %}
+</td>
+<td>{{ applicant.created_at[:10] }}</td>
+<td>
+  {% if applicant.status == 'accepted' %}
+    <span style="color: #388e3c; font-weight: bold; background: #e8f5e9; padding: 0.5rem; border-radius: 3px;">✓ Accepted</span>
+  {% elif applicant.status == 'rejected' %}
+    <span style="color: #d32f2f; font-weight: bold; background: #ffebee; padding: 0.5rem; border-radius: 3px;">✗ Rejected</span>
+  {% else %}
+    <span style="color: #f57c00; font-weight: bold; background: #fff3e0; padding: 0.5rem; border-radius: 3px;">⏳ Pending</span>
+  {% endif %}
+</td>
+<td>
+  {% if applicant.status == 'pending' %}
+    <form method="POST" action="/admin/accept/{{ applicant.id }}" style="display: inline;">
+      <button type="submit" id="btn-accept" class="btn-accept">Accept</button>
+    </form>
+    <form method="POST" action="/admin/reject/{{ applicant.id }}" style="display: inline;">
+      <button type="submit" id="btn-reject" class="btn-reject">Reject</button>
+    </form>
+  {% elif applicant.status == 'accepted' %}
+    <span style="color: #388e3c; font-weight: bold;">✓ Selected</span>
+  {% elif applicant.status == 'rejected' %}
+    <span style="color: #d32f2f; font-weight: bold;">✗ Rejected</span>
+  {% endif %}
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% else %}
+
+<div class="success" style="text-align: center;">
+  <p>No applicants yet. Check back later!</p>
+</div>
+
+{% endif %}
+
+<br><br>
+
+<a href="/" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.75rem 2rem; text-decoration: none; border-radius: 5px; display: inline-block;">
+  ← Back to Home
+</a>
+
+</section>
+
+</main>
+
+<footer>
+  <p>&copy; 2026 CASTINGUP. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
