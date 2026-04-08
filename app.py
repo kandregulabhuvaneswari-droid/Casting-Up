@@ -48,30 +48,35 @@ def reorganize_ids():
 
 
 def init_db():
-    conn = get_db_connection()
-    conn.execute(
-        """
-        CREATE TABLE IF NOT EXISTS applicants (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            full_name TEXT NOT NULL,
-            age INTEGER NOT NULL,
-            email TEXT NOT NULL UNIQUE,
-            phone TEXT NOT NULL,
-            experience TEXT,
-            created_at TEXT NOT NULL,
-            status TEXT DEFAULT 'pending'
-        )
-        """
-    )
-    
-    # Add status column if it doesn't exist
     try:
-        conn.execute("ALTER TABLE applicants ADD COLUMN status TEXT DEFAULT 'pending'")
-    except:
-        pass  # Column already exists
-    
-    conn.commit()
-    conn.close()
+        conn = get_db_connection()
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS applicants (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                full_name TEXT NOT NULL,
+                age INTEGER NOT NULL,
+                email TEXT NOT NULL UNIQUE,
+                phone TEXT NOT NULL,
+                experience TEXT,
+                created_at TEXT NOT NULL,
+                status TEXT DEFAULT 'pending'
+            )
+            """
+        )
+        
+        # Add status column if it doesn't exist
+        try:
+            conn.execute("ALTER TABLE applicants ADD COLUMN status TEXT DEFAULT 'pending'")
+        except:
+            pass  # Column already exists
+        
+        conn.commit()
+        conn.close()
+        print("Database initialized successfully")
+    except Exception as e:
+        print(f"ERROR initializing database: {e}")
+        raise
 
 
 @app.before_request
