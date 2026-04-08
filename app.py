@@ -1,15 +1,16 @@
 from datetime import datetime
 from pathlib import Path
 import sqlite3
+import os
 
 from flask import Flask, render_template, request, redirect, url_for, session
 from sqlite3 import IntegrityError
 
 app = Flask(__name__)
-app.secret_key = "change-this-secret-key"
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "change-this-secret-key")
 
-# Admin authentication key
-ADMIN_KEY = "admin123"
+# Admin authentication key from environment variable
+ADMIN_KEY = os.environ.get("ADMIN_KEY", "admin123")
 
 db_path = Path(__file__).parent / "applicants.db"
 
@@ -210,4 +211,5 @@ def reject_applicant(applicant_id):
 
 if __name__ == "__main__":
     init_db()
-    app.run(debug=True)
+    debug_mode = os.environ.get("FLASK_ENV") != "production"
+    app.run(debug=debug_mode)
