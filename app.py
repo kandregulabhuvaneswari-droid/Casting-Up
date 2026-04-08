@@ -1,10 +1,10 @@
 from datetime import datetime
 from pathlib import Path
-import sqlite3
 import os
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
 from flask import Flask, render_template, request, redirect, url_for, session
-from sqlite3 import IntegrityError
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "change-this-secret-key")
@@ -12,12 +12,13 @@ app.secret_key = os.environ.get("FLASK_SECRET_KEY", "change-this-secret-key")
 # Admin authentication key from environment variable
 ADMIN_KEY = os.environ.get("ADMIN_KEY", "admin123")
 
-db_path = Path(__file__).parent / "applicants.db"
-
+# PostgreSQL connection
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def get_db_connection():
-    conn = sqlite3.connect(db_path)
-    conn.row_factory = sqlite3.Row
+    if not DATABASE_URL:
+        raise Exception("DATABASE_URL not set")
+    conn = psycopg2.connect(DATABASE_URL)
     return conn
 
 
@@ -25,24 +26,27 @@ def reorganize_ids():
     """Reorganize IDs to be sequential after deletion"""
     conn = get_db_connection()
     try:
+        cur = conn.cursor(cursor_factory=RealDictCursor)
         # Get all applicants ordered by created_at
-        applicants = conn.execute(
+        cur.execute(
             "SELECT * FROM applicants ORDER BY created_at ASC"
-        ).fetchall()
+        )
+        applicants = cur.fetchall()
         
         # Delete all rows
-        conn.execute("DELETE FROM applicants")
+        cur.execute("DELETE FROM applicants")
         
         # Re-insert with new sequential IDs
         for idx, app in enumerate(applicants, 1):
-            conn.execute(
-                "INSERT INTO applicants (id, full_name, age, email, phone, experience, created_at, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            cur.execute(
+                "INSERT INTO applicants (id, full_name, age, email, phone, experience, created_at, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
                 (idx, app['full_name'], app['age'], app['email'], app['phone'], app['experience'], app['created_at'], app['status'])
             )
         
         conn.commit()
     except Exception as e:
         print(f"Error reorganizing IDs: {e}")
+        conn.rollback()
     finally:
         conn.close()
 
@@ -50,10 +54,11 @@ def reorganize_ids():
 def init_db():
     try:
         conn = get_db_connection()
-        conn.execute(
+        cur = conn.cursor()
+        cur.execute(
             """
             CREATE TABLE IF NOT EXISTS applicants (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id SERIAL PRIMARY KEY,
                 full_name TEXT NOT NULL,
                 age INTEGER NOT NULL,
                 email TEXT NOT NULL UNIQUE,
@@ -65,17 +70,13 @@ def init_db():
             """
         )
         
-        # Add status column if it doesn't exist
-        try:
-            conn.execute("ALTER TABLE applicants ADD COLUMN status TEXT DEFAULT 'pending'")
-        except:
-            pass  # Column already exists
-        
         conn.commit()
         conn.close()
         print("Database initialized successfully")
     except Exception as e:
         print(f"ERROR initializing database: {e}")
+        if conn:
+            conn.rollback()
         raise
 
 
@@ -134,9 +135,10 @@ def apply():
         if not errors:
             try:
                 conn = get_db_connection()
-                conn.execute(
+                cur = conn.cursor()
+                cur.execute(
                     "INSERT INTO applicants (full_name, age, email, phone, experience, created_at)"
-                    " VALUES (?, ?, ?, ?, ?, ?)",
+                    " VALUES (%s, %s, %s, %s, %s, %s)",
                     (
                         form_data["full_name"],
                         int(form_data["age"]),
@@ -149,9 +151,14 @@ def apply():
                 conn.commit()
                 conn.close()
                 return redirect(url_for("success"))
-            except IntegrityError:
+            except psycopg2.IntegrityError:
+                conn.rollback()
+                conn.close()
                 errors.append("An application with this email already exists.") 
-            except Exception:
+            except Exception as e:
+                conn.rollback()
+                conn.close()
+                print(f"Database error: {e}")
                 errors.append("Unable to save your application. Please try again.")
 
     return render_template("apply.html", errors=errors, form=form_data)
@@ -189,9 +196,11 @@ def admin():
         return redirect(url_for("login"))
     
     conn = get_db_connection()
-    applicants = conn.execute(
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    cur.execute(
         "SELECT id, full_name, age, email, phone, experience, created_at, status FROM applicants ORDER BY created_at ASC"
-    ).fetchall()
+    )
+    applicants = cur.fetchall()
     conn.close()
     return render_template("admin.html", applicants=applicants)
 
@@ -203,7 +212,8 @@ def accept_applicant(applicant_id):
         return redirect(url_for("login"))
     
     conn = get_db_connection()
-    conn.execute("UPDATE applicants SET status = ? WHERE id = ?", ("accepted", applicant_id))
+    cur = conn.cursor()
+    cur.execute("UPDATE applicants SET status = %s WHERE id = %s", ("accepted", applicant_id))
     conn.commit()
     conn.close()
     return redirect(url_for("admin"))
@@ -216,7 +226,8 @@ def reject_applicant(applicant_id):
         return redirect(url_for("login"))
     
     conn = get_db_connection()
-    conn.execute("UPDATE applicants SET status = ? WHERE id = ?", ("rejected", applicant_id))
+    cur = conn.cursor()
+    cur.execute("UPDATE applicants SET status = %s WHERE id = %s", ("rejected", applicant_id))
     conn.commit()
     conn.close()
     return redirect(url_for("admin"))

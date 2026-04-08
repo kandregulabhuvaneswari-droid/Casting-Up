@@ -7,3 +7,8 @@ services:
     envVars:
       - key: FLASK_ENV
         value: production
+  
+  - type: postgresql
+    name: audition-db
+    plan: free
+    ipAllowList: []
