@@ -88,7 +88,15 @@ def setup_database():
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    try:
+        return render_template("index.html")
+    except Exception as e:
+        print(f"ERROR in home route: {e}")
+        return f"Error: {str(e)}", 500
+
+@app.route("/health")
+def health():
+    return "OK", 200
 
 
 @app.route("/audition")
@@ -212,6 +220,16 @@ def reject_applicant(applicant_id):
     conn.commit()
     conn.close()
     return redirect(url_for("admin"))
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return "Page not found", 404
+
+@app.errorhandler(500)
+def server_error(error):
+    print(f"ERROR 500: {error}")
+    return f"Server error: {str(error)}", 500
 
 
 # Initialize database on startup
